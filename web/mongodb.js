@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 
 const uri = "mongodb+srv://meroxio:%40%23MeroxIO%23%40@cluster0.xcu2ogt.mongodb.net/?retryWrites=true&w=majority"; // Update with your connection string
-const dbName = "meroxio-scroll-2-top"; // Name of your database
+const dbName = "mx-trust-badges"; // Name of your database
 const collectionName = "shopify_sessions"; // Collection to store sessions
 
 let client;

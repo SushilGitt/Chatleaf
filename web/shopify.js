@@ -48,7 +48,7 @@ const shopify = shopifyApp({
   // This should be replaced with your preferred storage strategy
   sessionStorage: new MongoDBSessionStorage(
     'mongodb+srv://meroxio:%40%23MeroxIO%23%40@cluster0.xcu2ogt.mongodb.net/?retryWrites=true&w=majority',
-    'meroxio-scroll-2-top',
+    'mx-trust-badges',
   ),
 });
 

@@ -48,9 +48,9 @@ app.post(
 const PREMIUM_PLAN = "Basic";       // your “paid/basic” plan
 const UNLIMITED_PLAN = "Premium";  
 const Custom_app = "custom";
-const PREMIUM_PLAN_KEY = "scroll-2-top-premium";
+const PREMIUM_PLAN_KEY = "mx-trust-badges-premium";
 const IS_TEST = false;
-const APP_NAME = "Scroll 2 Top";
+const APP_NAME = "mx-trust-badges";
 const HTTP_STATUS = { OK: 200, BAD_REQUEST: 400, UNAUTHORIZED: 401, INTERNAL_SERVER_ERROR: 500 };
 
 app.use(express.json());
