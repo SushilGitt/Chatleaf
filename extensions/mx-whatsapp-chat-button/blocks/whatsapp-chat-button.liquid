@@ -1,0 +1,208 @@
+{% assign plan = shop.metafields.custom["mx-whatsapp-chat-button"] | default: 'free' %}
+{% assign template_name = template.name %}
+
+{% assign show_button = false %}
+
+{% if plan == 'free' %}
+  {% if template_name == 'index' %}
+    {% assign show_button = true %}
+  {% endif %}
+{% else %}
+  {% if block.settings.show_all %}
+    {% assign show_button = true %}
+  {% endif %}
+  {% if block.settings.show_home and template_name == 'index' %}
+    {% assign show_button = true %}
+  {% endif %}
+  {% if block.settings.show_product and template_name == 'product' %}
+    {% assign show_button = true %}
+  {% endif %}
+  {% if block.settings.show_collection and template_name == 'collection' %}
+    {% assign show_button = true %}
+  {% endif %}
+
+{% endif %}
+
+{% if show_button %}
+
+{% assign raw_phone = block.settings.phone_number | default: '911234567890' | strip %}
+{% assign whatsapp_phone = raw_phone | remove: ' ' | remove: '+' | remove: '-' %}
+
+<div
+  id="mxwab-{{ block.id }}"
+  data-phone="{{ whatsapp_phone }}"
+  data-message="{{ block.settings.message | escape }}"
+  {{ block.shopify_attributes }}
+>
+  <a class="mxwab-icon shape-{{ block.settings.shape }}" href="#" target="_blank" rel="noopener">
+
+    {% case block.settings.icon_style %}
+
+    {% when 'official' %}
+    <!-- Official WhatsApp Logo -->
+    <svg viewBox="0 0 32 32" width="28" height="28">
+      <path fill="#ffffff" d="M19.11 17.21c-.27-.14-1.58-.78-1.82-.87-.24-.09-.41-.14-.59.14-.17.27-.68.87-.83 1.05-.15.17-.3.2-.56.07-.27-.14-1.13-.42-2.15-1.33-.79-.7-1.33-1.56-1.48-1.82-.15-.27-.02-.41.11-.55.12-.12.27-.3.41-.45.14-.15.18-.27.27-.45.09-.17.05-.33-.02-.47-.07-.14-.59-1.42-.81-1.95-.21-.5-.42-.43-.59-.44h-.5c-.17 0-.45.06-.68.33-.24.27-.89.87-.89 2.11 0 1.24.91 2.44 1.03 2.61.12.17 1.78 2.71 4.31 3.8.6.26 1.07.41 1.44.53.61.19 1.17.16 1.61.1.49-.07 1.58-.65 1.8-1.28.22-.63.22-1.17.15-1.28-.07-.11-.24-.17-.5-.3z"/>
+      <path fill="#ffffff" d="M16 3C9.38 3 4 8.38 4 15c0 2.1.55 4.08 1.5 5.79L4 29l8.4-1.47A11.94 11.94 0 0016 27c6.62 0 12-5.38 12-12S22.62 3 16 3z"/>
+    </svg>
+
+    {% when 'bubble' %}
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="#fff">
+      <path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z"/>
+    </svg>
+
+    {% when 'minimal' %}
+    <span class="mxwab-w">W</span>
+
+    {% endcase %}
+
+  </a>
+</div>
+
+<style>
+#mxwab-{{ block.id }}{
+  position: fixed;
+  bottom: {{ block.settings.offset_bottom }}px;
+  z-index: 9999;
+  {% if block.settings.position == 'left' %}
+    left: {{ block.settings.offset_side }}px;
+  {% else %}
+    right: {{ block.settings.offset_side }}px;
+  {% endif %}
+}
+
+.mxwab-icon{
+  width:56px;
+  height:56px;
+  background: {{ block.settings.icon_bg_color }};
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 6px 16px rgba(0,0,0,0.2);
+  text-decoration:none;
+}
+
+/* Shape */
+.shape-circle { border-radius:50%; }
+.shape-rounded { border-radius:12px; }
+.shape-square { border-radius:0; }
+
+.mxwab-w{
+  color:#fff;
+  font-size:20px;
+  font-weight:bold;
+}
+</style>
+
+<script>
+(function() {
+  var root = document.getElementById('mxwab-{{ block.id }}');
+  if (!root) return;
+
+  var button = root.querySelector('a');
+  var phone = (root.dataset.phone || '911234567890').replace(/\D/g, '');
+  var message = root.dataset.message || '';
+  var href = 'https://wa.me/' + phone;
+
+  if (message.trim()) {
+    href += '?text=' + encodeURIComponent(message);
+  }
+
+  button.setAttribute('href', href);
+})();
+</script>
+
+{% endif %}
+{% schema %}
+{
+  "name": "WhatsApp Chat Button",
+  "target": "body",
+  "settings": [
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "WhatsApp number"
+    },
+    {
+      "type": "textarea",
+      "id": "message",
+      "label": "Default message"
+    },
+
+    {
+      "type": "header",
+      "content": "Icon Design"
+    },
+    {
+      "type": "select",
+      "id": "icon_style",
+      "label": "Icon style",
+      "options": [
+        { "value": "official", "label": "Official WhatsApp" },
+        { "value": "bubble", "label": "Chat Bubble" },
+        { "value": "minimal", "label": "Minimal" }
+      ],
+      "default": "official"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_color",
+      "label": "Background color",
+      "default": "#25D366"
+    },
+    {
+      "type": "select",
+      "id": "shape",
+      "label": "Shape",
+      "options": [
+        { "value": "circle", "label": "Circle" },
+        { "value": "rounded", "label": "Rounded" },
+        { "value": "square", "label": "Square" }
+      ],
+      "default": "circle"
+    },
+
+    {
+      "type": "header",
+      "content": "Position"
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Position",
+      "options": [
+        { "value": "right", "label": "Bottom Right" },
+        { "value": "left", "label": "Bottom Left" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "range",
+      "id": "offset_side",
+      "label": "Side spacing",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "offset_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "default": 20
+    },
+
+    {
+      "type": "header",
+      "content": "Premium Page Visibility"
+    },
+    { "type": "checkbox", "id": "show_all", "label": "Show on all pages", "default": true },
+    { "type": "checkbox", "id": "show_home", "label": "Homepage", "default": true },
+    { "type": "checkbox", "id": "show_product", "label": "Product pages", "default": true },
+    { "type": "checkbox", "id": "show_collection", "label": "Collection pages", "default": true },
+
+  ]
+}
+{% endschema %}

@@ -13,19 +13,13 @@ dotenv.config();
 const billingConfig = {
   "Basic": {
     // This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
-    amount: 10.00,
-    currencyCode: "USD",
-    trialDays: 0,
-    interval: BillingInterval.Every30Days,
-  },
- 
-  "Premium": {
-    // Added second plan with the same structure, at $99.99 (USD)
     amount: 100.00,
     currencyCode: "USD",
     trialDays: 0,
     interval: BillingInterval.Every30Days,
   },
+ 
+
 };
 
 const shopify = shopifyApp({

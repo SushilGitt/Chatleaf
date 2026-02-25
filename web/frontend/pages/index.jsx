@@ -1,5 +1,5 @@
 // @ts-check
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   Card,
   Page,
@@ -9,9 +9,7 @@ import {
   Modal,
   Frame,
   TopBar,
-  CalloutCard,
   DisplayText,
-  Toast,
   SkeletonBodyText,
   Banner,
   Stack,
@@ -19,171 +17,114 @@ import {
   Badge,
 } from "@shopify/polaris";
 import { useAppQuery, useAuthenticatedFetch } from "../hooks";
-import { useNavigate } from "react-router-dom";
-import { Redirect } from "@shopify/app-bridge/actions";
 import { useAppBridge } from "@shopify/app-bridge-react";
+import { Redirect } from "@shopify/app-bridge/actions";
 import { shopifyBackground } from "../assets";
 
 export default function HomePage() {
-  const emptyToastProps = { content: null };
-  const [toastProps, setToastProps] = useState(emptyToastProps);
-  const [selectedPlan, setSelectedPlan] = useState("free"); // default Free
   const [loadingPlan, setLoadingPlan] = useState(null);
-  const [confirmPlan, setConfirmPlan] = useState(null);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [activateError, setActivateError] = useState(null);
   const [videoModalActive, setVideoModalActive] = useState(false);
 
   const app = useAppBridge();
   const fetch = useAuthenticatedFetch();
   const redirect = Redirect.create(app);
-  const navigate = useNavigate();
 
-  const toggleVideoModal = useCallback(
-    () => setVideoModalActive((active) => !active),
-    []
-  );
-
-  // --- Prices map ---
-  const planPrices = {
-    basic: "10.00",
-    premium: "100.00",
+  const logo = {
+    width: 50,
+    topBarSource:
+      "https://cdn.shopify.com/s/files/1/0960/5883/5311/files/Whatsapp.png?v=1771996216",
+    url: "/",
+    accessibilityLabel: "WhatsApp Chat Button",
   };
+
+  /* ---------------- Plans ---------------- */
 
   const planLabels = {
     free: "Free",
-    basic: "Basic",
     premium: "Premium",
   };
 
-  // Fetch current plan
-  const { data: subscriptionData, isLoading } = useAppQuery({
+  const planPrices = {
+    premium: "100.00",
+  };
+
+  const plans = ["free", "premium"];
+
+  const {
+    data: subscriptionData,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useAppQuery({
     url: "/api/hasActiveSubscription",
   });
 
-  useEffect(() => {
-    if (subscriptionData && subscriptionData.tier) {
-      // Map backend tiers → frontend tiers
-      let frontendTier = "free";
-      if (subscriptionData.tier === "premium") frontendTier = "basic";
-      if (subscriptionData.tier === "unlimited") frontendTier = "premium";
-      setSelectedPlan(frontendTier);
-    }
+  const currentPlan = useMemo(() => {
+    if (!subscriptionData) return "free";
+    if (subscriptionData.tier === "premium") return "premium";
+    return "free";
   }, [subscriptionData]);
 
-  // --- Handle plan click ---
-  const requestPlanChange = (plan) => {
-    setConfirmPlan(plan);
-    setShowConfirm(true);
-  };
+  const currentPlanLabel = planLabels[currentPlan];
+  const isPlanLoading = isLoading || isFetching;
 
-  const confirmSubscription = async () => {
-    if (!confirmPlan) return;
+  /* ---------------- Theme Editor ---------------- */
 
-    // Case 1: Already on this plan
-    if (selectedPlan === confirmPlan) {
-      setToastProps({ content: `You’re already using the ${planLabels[confirmPlan]} plan ✅` });
-      setShowConfirm(false);
-      return;
-    }
-
-    // Case 2: Switching to free (cancel subscription)
-    if (confirmPlan === "free") {
-      setLoadingPlan(confirmPlan);
-      try {
-        const res = await fetch("/api/cancelSubscription");
-        const data = await res.json();
-
-        if (data.status && data.status !== "No subscription found") {
-          setSelectedPlan("free");
-          setToastProps({
-            content: "Subscription cancelled and moved to the Free plan ✅",
-          });
-        } else {
-          setToastProps({ content: "Unable to cancel the subscription", error: true });
-        }
-      } catch (err) {
-        setToastProps({ content: "Cancellation failed ❌", error: true });
-      } finally {
-        setLoadingPlan(null);
-        setShowConfirm(false);
-      }
-      return;
-    }
-
-    // Case 3: Switching to paid plan
-    setLoadingPlan(confirmPlan);
-
-    // Map frontend → backend values
-    let backendPlan = confirmPlan;
-    if (confirmPlan === "basic") backendPlan = "premium"; // frontend basic = backend premium
-    if (confirmPlan === "premium") backendPlan = "unlimited"; // frontend premium = backend unlimited
-
-    try {
-      const res = await fetch(`/api/createSubscription?plan=${backendPlan}`);
-      const data = await res.json();
-      if (data.confirmationUrl) {
-        setToastProps({ content: "Taking you to Shopify billing to confirm…" });
-        redirect.dispatch(Redirect.Action.REMOTE, data.confirmationUrl);
-      } else if (data.error) {
-        setToastProps({ content: data.error, error: true });
-      }
-    } catch (err) {
-      setToastProps({ content: "Something went wrong during subscription ❌", error: true });
-    } finally {
-      setLoadingPlan(null);
-      setShowConfirm(false);
-    }
-  };
-
-  // --- Activate Scroll to Top Button (Theme Editor) ---
   const openThemeEditor = async () => {
     setActivateError(null);
     try {
       const response = await fetch("/api/getshop");
-      if (!response.ok) throw new Error("Could not detect shop domain");
       const data = await response.json();
-      if (!data.shop) throw new Error("Shop domain is missing");
 
-      window.open(
-        `https://${data.shop}/admin/themes/current/editor?context=apps&activateAppId=b355dba7-d415-49dc-8399-11206b10c9ca/scroll-to-top-embed`,
-        "_blank"
-      );
-    } catch (error) {
-      console.error("❌ Activate failed:", error);
-      setActivateError(error.message);
+      const APP_ID = "YOUR_APP_ID";
+      const BLOCK_HANDLE = "whatsapp-chat-button";
+
+      const editorUrl = `https://${data.shop}/admin/themes/current/editor?context=apps&activateAppId=${APP_ID}/${BLOCK_HANDLE}`;
+
+      window.open(editorUrl, "_blank");
+    } catch {
+      setActivateError("Failed to open theme editor.");
     }
   };
 
-  const toastMarkup =
-    toastProps.content && (
-      <Toast
-        {...toastProps}
-        onDismiss={() => setToastProps(emptyToastProps)}
-      />
-    );
+  /* ---------------- Billing ---------------- */
 
-  // --- Header setup ---
-  const logo = {
-    width: 450,
-    height: 90,
-    topBarSource:
-      "https://cdn.shopify.com/s/files/1/0908/8562/0025/files/1_2efac025-bda0-4756-9aa2-fbe5bf1d3405.png?v=1760009662",
-    url: "/",
-    accessibilityLabel: "App logo",
+  const handlePlanClick = async (targetPlan) => {
+    if (targetPlan === currentPlan) return;
+
+    try {
+      setLoadingPlan(targetPlan);
+
+      if (targetPlan === "free") {
+        await fetch("/api/cancelSubscription");
+        await refetch();
+        return;
+      }
+
+      if (targetPlan === "premium") {
+        const res = await fetch(`/api/createSubscription?plan=premium`);
+        const data = await res.json();
+
+        if (data.confirmationUrl) {
+          redirect.dispatch(
+            Redirect.Action.REMOTE,
+            String(data.confirmationUrl)
+          );
+        }
+      }
+    } finally {
+      setLoadingPlan(null);
+    }
   };
 
-  const topBarMarkup = <TopBar />;
+  /* ---------------- Styles ---------------- */
 
-  const plans = ["free", "basic", "premium"];
-  const currentPlanLabel = planLabels[selectedPlan] || "Free";
-
-  // Shared wrapper style for “big sections”
   const sectionShellStyle = {
-    background: "#ffffff",
+    background: "#f9fafb",
     borderRadius: 16,
     padding: 18,
-    boxShadow: "0 12px 30px rgba(15, 23, 42, 0.08)",
+    boxShadow: "0 10px 26px rgba(15, 23, 42, 0.06)",
     border: "1px solid #e5e7eb",
   };
 
@@ -194,30 +135,24 @@ export default function HomePage() {
         width: 64,
         borderRadius: 999,
         background:
-          "linear-gradient(90deg, #008060 0%, #36a3ff 50%, #ffb347 100%)",
+          "linear-gradient(90deg, #22c55e 0%, #25D366 50%, #16a34a 100%)",
         marginBottom: 12,
       }}
     />
   );
 
   return (
-    <Frame topBar={topBarMarkup} logo={logo}>
-      <Page>
-        {toastMarkup}
+    <Frame topBar={<TopBar />} logo={logo}>
+      <Page title="WhatsApp Chat Button">
         <Layout>
-          {/* PLAN SELECTOR CARD */}
+
+          {/* PLAN SECTION */}
           <Layout.Section>
             <div style={sectionShellStyle}>
               {sectionAccentBar}
-              <Card title="Your current plan" sectioned>
-                {isLoading ? (
-                  <div style={{ display: "flex", gap: "12px" }}>
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} style={{ flex: 1 }}>
-                        <SkeletonBodyText lines={1} />
-                      </div>
-                    ))}
-                  </div>
+              <Card title="Your plan" sectioned>
+                {isPlanLoading ? (
+                  <SkeletonBodyText lines={2} />
                 ) : (
                   <Stack vertical spacing="loose">
                     <Stack alignment="center" spacing="tight">
@@ -225,28 +160,17 @@ export default function HomePage() {
                       <Badge status="success">{currentPlanLabel}</Badge>
                     </Stack>
 
-                    <TextContainer spacing="tight">
-                      <p>
-                        You can upgrade at any time to unlock additional
-                        controls and faster support. All charges are processed
-                        securely through Shopify Billing.
-                      </p>
-                    </TextContainer>
-
                     <ButtonGroup>
                       {plans.map((plan) => (
                         <Button
                           key={plan}
-                          primary={selectedPlan === plan}
-                          pressed={selectedPlan === plan}
+                          primary={currentPlan === plan}
                           loading={loadingPlan === plan}
-                          onClick={() => requestPlanChange(plan)}
+                          onClick={() => handlePlanClick(plan)}
                         >
                           {plan === "free"
                             ? "Free"
-                            : plan === "basic"
-                            ? "Basic – $10/mo"
-                            : "Premium – $100/mo"}
+                            : `Premium – $${planPrices.premium}/month`}
                         </Button>
                       ))}
                     </ButtonGroup>
@@ -256,210 +180,84 @@ export default function HomePage() {
             </div>
           </Layout.Section>
 
-          {/* Confirmation Modal */}
-          <Modal
-            open={showConfirm}
-            onClose={() => setShowConfirm(false)}
-            title="Confirm plan change"
-            primaryAction={{
-              content:
-                selectedPlan === confirmPlan
-                  ? "Okay, got it"
-                  : confirmPlan === "free"
-                  ? "Yes, cancel my subscription"
-                  : `Subscribe for $${planPrices[confirmPlan] || "0.00"}/month`,
-              onAction: confirmSubscription,
-              loading: loadingPlan === confirmPlan,
-            }}
-            secondaryActions={
-              selectedPlan !== confirmPlan
-                ? [{ content: "No, go back", onAction: () => setShowConfirm(false) }]
-                : []
-            }
-          >
-            <Modal.Section>
-              {selectedPlan === confirmPlan ? (
-                <p>
-                  You’re already on the{" "}
-                  <b>{(confirmPlan || "").toUpperCase()}</b> plan ✅
-                </p>
-              ) : confirmPlan === "free" ? (
-                <p>
-                  Are you sure you want to cancel your{" "}
-                  <b>{selectedPlan.toUpperCase()}</b> subscription and move to the{" "}
-                  <b>FREE</b> plan?
-                </p>
-              ) : (
-                <p>
-                  Do you want to switch to the{" "}
-                  <b>{(confirmPlan || "").toUpperCase()}</b> plan for{" "}
-                  <b>${planPrices[confirmPlan] || "0.00"}</b> per month?
-                </p>
-              )}
-            </Modal.Section>
-          </Modal>
-
-          {/* Status Banner (if error) */}
-          {activateError && (
-            <Layout.Section>
-              <Banner status="critical" onDismiss={() => setActivateError(null)}>
-                {activateError}
-              </Banner>
-            </Layout.Section>
-          )}
-
-          {/* HERO INTRODUCTION CARD (text + video preview) */}
+          {/* INTRO SECTION */}
           <Layout.Section>
             <div style={sectionShellStyle}>
               {sectionAccentBar}
               <Card sectioned>
-                <Stack
-                  alignment="center"
-                  distribution="fill"
-                  wrap
-                  spacing="loose"
-                >
-                  {/* Left side: introduction text */}
+                <Stack alignment="center" distribution="fill" wrap spacing="loose">
+
+                  {/* LEFT CONTENT */}
                   <div style={{ flex: 1, minWidth: 260, maxWidth: 520 }}>
                     <TextContainer spacing="tight">
                       <DisplayText size="Large">
-                        <span>Welcome to Scroll to Top Button</span>
+                        Add WhatsApp chat to your store
                       </DisplayText>
+
                       <p>
-                        The Scroll to Top Button adds a clean, floating shortcut
-                        that lets shoppers instantly jump back to the top of the
-                        page. It keeps long pages easy to navigate and makes
-                        browsing feel faster and more polished on every device.
+                        Add a floating WhatsApp button to your store and let customers contact you instantly.
+                        Increase trust, improve support, and boost conversions with direct messaging.
                       </p>
 
-                      <h2>
-                        <b>Main highlights:</b>
-                      </h2>
-                      <ul className="appFeatures">
-                        <li>
-                          <strong>Smooth return-to-top motion:</strong> Delivers a
-                          fluid scroll-back experience instead of a sudden jump.
-                        </li>
-                        <li>
-                          <strong>Fully customizable styling:</strong> Tweak
-                          colors, icons, and hover states to match your brand.
-                        </li>
-                        <li>
-                          <strong>Page-level visibility rules:</strong> Decide
-                          where the button should appear – collections, products,
-                          blog posts, or standard pages.
-                        </li>
-                        <li>
-                          <strong>Optimized for mobile:</strong> Looks great and
-                          stays reachable on phones and tablets.
-                        </li>
-                        <li>
-                          <strong>Lightweight implementation:</strong> Built to
-                          stay fast and not slow down your storefront.
-                        </li>
-                      </ul>
-                    </TextContainer>
+                      <h2><b>How to set up</b></h2>
+                      <ol style={{ paddingLeft: "18px" }}>
+                        <li>Click <b>Open theme editor</b>.</li>
+                        <li>Add block → Apps → WhatsApp Chat Button.</li>
+                        <li>Enter your WhatsApp number.</li>
+                        <li>Customize position, color, and style.</li>
+                        <li>Save the theme.</li>
+                      </ol>
 
-                    <div style={{ marginTop: 20 }}>
-                      <Button onClick={toggleVideoModal} primary>
-                        Watch quick setup guide ▶️
-                      </Button>
-                    </div>
+                      <h2><b>Main features</b></h2>
+                      <ul style={{ paddingLeft: "18px" }}>
+                        <li>Floating WhatsApp icon</li>
+                        <li>Custom message support</li>
+                        <li>Multiple icon styles</li>
+                        <li>Position control (left/right)</li>
+                        <li>Free & Premium plan support</li>
+                      </ul>
+
+              
+
+                    </TextContainer>
                   </div>
 
-                  {/* Right side: phone / video preview */}
-                  <div
-                    style={{
-                      flex: 1,
-                      minWidth: 260,
-                      maxWidth: 320,
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
+                  {/* RIGHT PREVIEW */}
+                  <div style={{ flex: 1, minWidth: 260, maxWidth: 320 }}>
                     <div
                       style={{
-                        width: "100%",
                         borderRadius: 12,
                         overflow: "hidden",
-                        boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+                        boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
                         backgroundImage: `url(${shopifyBackground})`,
                         backgroundSize: "cover",
-                        backgroundPosition: "center",
                         padding: 18,
                       }}
                     >
-                      <video
-                        src="https://cdn.shopify.com/videos/c/o/v/3b1a1e7263994b299f3af4f19630ef5f.mp4"
-                        controls
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: 8,
-                          display: "block",
-                        }}
-                      >
-                        Your browser does not support the video tag.
-                      </video>
+                      <img
+                        src="https://cdn.shopify.com/s/files/1/0960/5883/5311/files/Screenshot_2026-02-25_125658.png?v=1772004439"
+                        alt="WhatsApp Preview"
+                        style={{ width: "100%", borderRadius: 8 }}
+                      />
                     </div>
                   </div>
+
                 </Stack>
               </Card>
             </div>
           </Layout.Section>
 
-          {/* Scroll to Top Callout */}
-          <Layout.Section>
-            <div style={sectionShellStyle}>
-              {sectionAccentBar}
-              <CalloutCard
-                title="Enable the app embed to start using the button"
-                illustration="https://cdn.shopify.com/s/assets/admin/checkout/settings-customizecart-705f57c725ac05be5a34ec20c05b94298cb8afd10aac7bd9c7ad02030f48cfa0.svg"
-                primaryAction={{
-                  content: "Open theme editor",
-                  onAction: openThemeEditor,
-                  accessibilityLabel: "Enable the Scroll to Top app embed",
-                }}
+          {activateError && (
+            <Layout.Section>
+              <Banner
+                status="critical"
+                onDismiss={() => setActivateError(null)}
               >
-                <p>
-                  To make the Scroll to Top button appear on your storefront, turn
-                  on the app embed inside your current theme. Once it’s enabled,
-                  you can fine-tune placement, styling, and visibility directly in
-                  the theme editor.
-                </p>
-              </CalloutCard>
-            </div>
-          </Layout.Section>
+                {activateError}
+              </Banner>
+            </Layout.Section>
+          )}
 
-          {/* Setup Video Modal (full-screen) */}
-          <Modal
-            open={videoModalActive}
-            onClose={toggleVideoModal}
-            title="Quick setup in Online Store 2.0"
-          >
-            <Modal.Section>
-              <div style={{ padding: "56% 0 0 0", position: "relative" }}>
-                <iframe
-                  src="https://cdn.shopify.com/videos/c/o/v/bd24b7a578304e96a9fcfaaf27fabdc0.mp4"
-                  frameBorder="0"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  allowFullScreen
-                  style={{
-                    position: "absolute",
-                    top: "0",
-                    left: "0",
-                    width: "100%",
-                    height: "50%",
-                  }}
-                  title="Quick Setup"
-                ></iframe>
-              </div>
-            </Modal.Section>
-          </Modal>
         </Layout>
       </Page>
     </Frame>
