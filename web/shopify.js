@@ -68,4 +68,10 @@ const shopify = shopifyApp({
   useOnlineTokens: true,
 });
 
+// GDPR / privacy-compliance webhooks are registered via shopify.app.chatlink.toml
+// under [webhooks.privacy_compliance] — Shopify no longer accepts those topics
+// via the GraphQL register API and returns 403. We do not register any other
+// webhooks programmatically, so disable the auto-register call after auth.
+shopify.api.webhooks.register = async () => ({});
+
 export default shopify;
