@@ -215,7 +215,7 @@ export default function Pricing() {
               background: "#FAFAFA",
             }}>
               <div style={{ padding: "16px 22px", fontSize: 12, color: "#6B7280", display: "flex", alignItems: "center" }}>
-                30-day money-back guarantee
+                Cancel anytime — no long-term commitment
               </div>
               <div style={{ padding: "14px 14px", borderLeft: "1px solid #E5E7EB" }}>
                 <Button
