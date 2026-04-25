@@ -30,7 +30,11 @@ const APP_NAMESPACE = "custom";
 const SHOP_METAFIELD_KEY = "chatlink-whatsapp-button";
 const APP_INSTALL_METAFIELD_KEY = "chatlink-whatsapp-button-premium";
 
-const IS_TEST = process.env.NODE_ENV !== "production";
+// TODO: switch billing to Shopify Managed Pricing (configured in Partner
+// Dashboard) — Pricing.jsx will redirect to the hosted plans page and this
+// appSubscriptionCreate path becomes unused. Until then keep test=true so
+// dev-store reviewers and our own QA can approve without a payment method.
+const IS_TEST = true;
 
 const APP_NAME = "chatlink-whatsapp-button";
 
