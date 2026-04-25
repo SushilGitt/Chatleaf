@@ -68,7 +68,4 @@ const shopify = shopifyApp({
   useOnlineTokens: true,
 });
 
-// Skip webhook registration
-shopify.api.webhooks.register = async () => ({});
-
 export default shopify;

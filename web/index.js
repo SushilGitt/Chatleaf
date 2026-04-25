@@ -30,7 +30,7 @@ const APP_NAMESPACE = "custom";
 const SHOP_METAFIELD_KEY = "chatlink-whatsapp-button";
 const APP_INSTALL_METAFIELD_KEY = "chatlink-whatsapp-button-premium";
 
-const IS_TEST = true;
+const IS_TEST = process.env.NODE_ENV !== "production";
 
 const APP_NAME = "chatlink-whatsapp-button";
 
@@ -228,38 +228,6 @@ const MetafieldService = {
     }
   },
 };
-
-/* ------------------------------------------------ */
-/*           PUBLIC SUBSCRIPTION CHECK               */
-/* ------------------------------------------------ */
-
-app.get("/api/scroll-to-top/hasSubscription", async (req, res) => {
-  try {
-    const { shop } = req.query;
-
-    if (!shop) {
-      return handleError(res, HTTP_STATUS.BAD_REQUEST, "Missing shop parameter");
-    }
-
-    const collection = await connectToMongoDB();
-    const session = await collection.findOne({ shop });
-
-    if (!session) {
-      return handleError(res, HTTP_STATUS.UNAUTHORIZED, "Session not found");
-    }
-
-    const tier = await SubscriptionService.getPlanTier(session);
-
-    await MetafieldService.updateShopMetafield(session, tier);
-
-    res.status(HTTP_STATUS.OK).send({
-      hasActiveSubscription: tier !== "free",
-      tier,
-    });
-  } catch (err) {
-    handleError(res, HTTP_STATUS.INTERNAL_SERVER_ERROR, err.message);
-  }
-});
 
 /* ------------------------------------------------ */
 /*            PROTECTED ROUTES (AUTH)                */
