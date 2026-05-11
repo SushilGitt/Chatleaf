@@ -119,8 +119,8 @@ const BillingService = {
 
   async request(session) {
     const { data } = await shopifyGraphQL(session, `
-      mutation appSubscriptionCreate($name: String!, $returnUrl: URL!, $test: Boolean, $lineItems: [AppSubscriptionLineItemInput!]!) {
-        appSubscriptionCreate(name: $name, returnUrl: $returnUrl, test: $test, lineItems: $lineItems) {
+      mutation appSubscriptionCreate($name: String!, $returnUrl: URL!, $test: Boolean, $lineItems: [AppSubscriptionLineItemInput!]!, $trialDays: Int) {
+        appSubscriptionCreate(name: $name, returnUrl: $returnUrl, test: $test, lineItems: $lineItems, trialDays: $trialDays) {
           appSubscription { id }
           confirmationUrl
           userErrors { field message }
@@ -130,6 +130,7 @@ const BillingService = {
       name: PREMIUM_PLAN,
       returnUrl: `https://${session.shop}/admin/apps/${process.env.SHOPIFY_API_KEY}`,
       test: IS_TEST,
+      trialDays: PLAN_TRIAL_DAYS > 0 ? PLAN_TRIAL_DAYS : null,
       lineItems: [{
         plan: {
           appRecurringPricingDetails: {
