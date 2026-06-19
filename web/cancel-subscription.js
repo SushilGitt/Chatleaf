@@ -1,71 +1,46 @@
-import { GraphqlQueryError } from "@shopify/shopify-api";
-import shopify from "./shopify.js";
+// Cancels the shop's active app subscription (the "downgrade to Free" action).
+//
+// Uses a direct fetch to the Admin GraphQL API — the same approach as
+// web/index.js — because @shopify/shopify-api v13 removed the GraphQL client's
+// legacy `.query()` method. The previous library-client implementation threw
+// at runtime, which is why downgrading silently failed.
 
+const API_VERSION = "2026-04";
 
-
-let isProd;
-
-export default async function cancelSubscription(
-    session,
-    isProdOverride = process.env.isProd === "production"
-  ){
-  
-    isProd = isProdOverride;
-  
-    const subscriptionId = await getActiveSubsId(session);
-    console.log("subscriptionId:" +subscriptionId)
-    const status = await appSubscriptionCancel(session, subscriptionId);
-
-    return status;
-  
-  }
-
-
-  async function getActiveSubsId(session) {
-    const client = new shopify.api.clients.Graphql({ session });
-  
-      const currentInstallations = await client.query({
-        data: RECURRING_PURCHASES_QUERY,
-      });
-      const subscriptions =
-        currentInstallations.body.data.currentAppInstallation.activeSubscriptions;
-  
-      for (let i = 0, len = subscriptions.length; i < len; i++) {
-        console.log("subscription name: ", subscriptions[i].name);
-        console.log("Subscription Id: ",subscriptions[i].id);
-        return subscriptions[i].id;
-
-      }
-
-  }
-
-  async function appSubscriptionCancel(session, subscriptionId) {
-    const client = new shopify.api.clients.Graphql({ session });
-  
-    const mutationResponse = await client.query({
-      data: {
-        query: CANCEL_SUBSCRIPTION,
-        variables: {
-          id: subscriptionId
-        },
+async function shopifyGraphQL(session, query, variables = {}) {
+  const res = await fetch(
+    `https://${session.shop}/admin/api/${API_VERSION}/graphql.json`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": session.accessToken,
       },
-    });
-
-    if (mutationResponse.body.errors && mutationResponse.body.errors.length) {
-      throw new ShopifyGraphqlClient(
-        "Error while subscription cancel",
-        mutationResponse.body.errors
-      );
-    }else{
-      console.log("Subscription canceled successfully: ", session.shop);
-      //console.log("Status: ", mutationResponse.body.data.appSubscriptionCancel.appSubscription.status);
+      body: JSON.stringify({ query, variables }),
     }
-
-    return  mutationResponse.body.data.appSubscriptionCancel.appSubscription.status;
-
+  );
+  const json = await res.json();
+  if (!res.ok) {
+    throw new Error(`GraphQL ${res.status}: ${JSON.stringify(json)}`);
   }
+  if (json.errors?.length) {
+    throw new Error(json.errors.map((e) => e.message).join(", "));
+  }
+  return json.data;
+}
 
-  const CANCEL_SUBSCRIPTION = `
+const RECURRING_PURCHASES_QUERY = `
+query {
+  currentAppInstallation {
+    activeSubscriptions {
+      id
+      name
+      status
+    }
+  }
+}`;
+
+const CANCEL_SUBSCRIPTION = `
 mutation appSubscriptionCancel($id: ID!) {
   appSubscriptionCancel(id: $id) {
     appSubscription {
@@ -78,15 +53,33 @@ mutation appSubscriptionCancel($id: ID!) {
       message
     }
   }
-}
-`;
+}`;
 
-const RECURRING_PURCHASES_QUERY = `
-query appSubscription {
-  currentAppInstallation {
-    activeSubscriptions {
-      name, id, test
-    }
+export default async function cancelSubscription(session) {
+  // Find the active subscription to cancel.
+  const data = await shopifyGraphQL(session, RECURRING_PURCHASES_QUERY);
+  const subscriptions =
+    data?.currentAppInstallation?.activeSubscriptions || [];
+  const target =
+    subscriptions.find((s) => s.status === "ACTIVE") || subscriptions[0];
+
+  if (!target) {
+    return "No active subscription";
   }
+
+  // Cancel it.
+  const cancelData = await shopifyGraphQL(session, CANCEL_SUBSCRIPTION, {
+    id: target.id,
+  });
+  const result = cancelData?.appSubscriptionCancel;
+
+  if (result?.userErrors?.length) {
+    throw new Error(result.userErrors.map((e) => e.message).join(", "));
+  }
+
+  console.log(
+    `Subscription cancelled for ${session.shop}: ${result?.appSubscription?.id} (${result?.appSubscription?.status})`
+  );
+
+  return result?.appSubscription?.status || "CANCELLED";
 }
-`;
