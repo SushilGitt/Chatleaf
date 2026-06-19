@@ -20,7 +20,7 @@ export default function Installation() {
   const steps = [
     {
       title: "Open Theme Editor",
-      desc: "Go to Shopify admin → Online Store → Themes → Customize. Or click the button on the dashboard.",
+      desc: "Go to Shopify admin → Online Store → Themes → Customize.",
     },
     {
       title: "Add the Chatleaf Block",
