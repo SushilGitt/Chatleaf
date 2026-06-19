@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "748b3c23523154b47eb65f66c5a21655"
-application_url = "https://shopify.dev/apps/default-app-home"
+application_url = "https://chatleaf.91.239.208.85.sslip.io"
 embedded = true
 name = "Chatleaf"
 
@@ -13,7 +13,7 @@ api_version = "2026-07"
 scopes = ""
 
 [auth]
-redirect_urls = [ "https://shopify.dev/apps/default-app-home/api/auth" ]
+redirect_urls = [ "https://chatleaf.91.239.208.85.sslip.io/api/auth/callback" ]
 
 [build]
 automatically_update_urls_on_dev = true
