@@ -1,4 +1,4 @@
-{% assign plan = shop.metafields.custom["chatlink-whatsapp-button"] | default: 'free' %}
+{% assign plan = shop.metafields.custom["chatleaf-whatsapp-button"] | default: 'free' %}
 {% assign template_name = template.name %}
 
 {% assign raw_phone = block.settings.phone_number | strip %}
@@ -30,12 +30,12 @@
 {% if show_button %}
 
 <div
-  id="mxwab-{{ block.id }}"
+  id="clwb-{{ block.id }}"
   data-phone="{{ whatsapp_phone }}"
   data-message="{{ block.settings.message | escape }}"
   {{ block.shopify_attributes }}
 >
-  <a class="mxwab-icon shape-{{ block.settings.shape }}" href="#" target="_blank" rel="noopener">
+  <a class="clwb-icon shape-{{ block.settings.shape }}" href="#" target="_blank" rel="noopener">
 
     {% case block.settings.icon_style %}
 
@@ -52,7 +52,7 @@
     </svg>
 
     {% when 'minimal' %}
-    <span class="mxwab-w">W</span>
+    <span class="clwb-w">W</span>
 
     {% endcase %}
 
@@ -60,7 +60,7 @@
 </div>
 
 <style>
-#mxwab-{{ block.id }}{
+#clwb-{{ block.id }}{
   position: fixed;
   bottom: {{ block.settings.offset_bottom }}px;
   z-index: 9999;
@@ -71,7 +71,7 @@
   {% endif %}
 }
 
-.mxwab-icon{
+.clwb-icon{
   width:56px;
   height:56px;
   background: {{ block.settings.icon_bg_color }};
@@ -87,7 +87,7 @@
 .shape-rounded { border-radius:12px; }
 .shape-square { border-radius:0; }
 
-.mxwab-w{
+.clwb-w{
   color:#fff;
   font-size:20px;
   font-weight:bold;
@@ -96,7 +96,7 @@
 
 <script>
 (function() {
-  var root = document.getElementById('mxwab-{{ block.id }}');
+  var root = document.getElementById('clwb-{{ block.id }}');
   if (!root) return;
 
   var button = root.querySelector('a');
@@ -116,7 +116,7 @@
 {% endif %}
 {% schema %}
 {
-  "name": "ChatLink WhatsApp Button",
+  "name": "Chatleaf WhatsApp Button",
   "target": "body",
   "settings": [
     {

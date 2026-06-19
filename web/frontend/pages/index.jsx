@@ -52,7 +52,7 @@ export default function HomePage() {
 
   const steps = [
     { title: "Open editor", desc: "Launch theme editor" },
-    { title: "Add block", desc: "Apps → ChatLink" },
+    { title: "Add block", desc: "Apps → Chatleaf" },
     { title: "Set number", desc: "Enter WhatsApp number" },
     { title: "Customize", desc: "Style & position" },
     { title: "Publish", desc: "Save — you're live" },
@@ -63,7 +63,7 @@ export default function HomePage() {
       label: "Plan",
       value: isPlanLoading ? "—" : (currentPlan === "premium" ? "Premium" : "Free"),
       hint: currentPlan === "premium" ? "All pages" : "Homepage only",
-      accent: "#0084FF",
+      accent: "#16A34A",
     },
     {
       label: "Status",
@@ -100,20 +100,20 @@ export default function HomePage() {
               <div style={{
                 width: 44, height: 44,
                 borderRadius: 10,
-                background: "#EFF6FF",
+                background: "#ECFDF5",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 flexShrink: 0,
               }}>
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#0084FF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#16A34A" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
                 </svg>
               </div>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: "#002B5C", marginBottom: 2 }}>
-                  ChatLink Dashboard
+                <div style={{ fontSize: 16, fontWeight: 700, color: "#14532D", marginBottom: 2 }}>
+                  Chatleaf Dashboard
                 </div>
                 <div style={{ fontSize: 13, color: "#6B7280" }}>
-                  Connect your store to WhatsApp in minutes
+                  One-tap WhatsApp chat for your storefront
                 </div>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function HomePage() {
                   <SkeletonBodyText lines={1} />
                 ) : (
                   <>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: "#002B5C", marginBottom: 2 }}>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: "#14532D", marginBottom: 2 }}>
                       {s.value}
                     </div>
                     <div style={{ fontSize: 12, color: "#6B7280" }}>
@@ -156,7 +156,7 @@ export default function HomePage() {
         <Layout.Section>
           <Card sectioned>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#002B5C" }}>Setup Steps</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#14532D" }}>Setup Steps</div>
               {currentPlan === "free" && (
                 <Button size="slim" onClick={() => navigate("/pricing")}>Upgrade to Premium</Button>
               )}
@@ -174,7 +174,7 @@ export default function HomePage() {
                 <div key={i} style={{ flex: 1, textAlign: "center", position: "relative", zIndex: 1 }}>
                   <div style={{
                     width: 30, height: 30, borderRadius: "50%",
-                    background: "#0084FF", color: "#fff",
+                    background: "#16A34A", color: "#fff",
                     fontSize: 13, fontWeight: 700,
                     display: "inline-flex", alignItems: "center", justifyContent: "center",
                     marginBottom: 8,
@@ -182,7 +182,7 @@ export default function HomePage() {
                   }}>
                     {i + 1}
                   </div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#002B5C", marginBottom: 2 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#14532D", marginBottom: 2 }}>
                     {step.title}
                   </div>
                   <div style={{ fontSize: 11, color: "#6B7280", lineHeight: 1.4 }}>
@@ -197,10 +197,10 @@ export default function HomePage() {
         {/* INFO + TIPS SPLIT */}
         <Layout.Section oneHalf>
           <Card sectioned>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#002B5C", marginBottom: 14 }}>How It Works</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#14532D", marginBottom: 14 }}>How It Works</div>
             <div>
               {[
-                { title: "Install", desc: "Add the ChatLink block to any theme via the Shopify theme editor." },
+                { title: "Install", desc: "Add the Chatleaf block to any theme via the Shopify theme editor." },
                 { title: "Configure", desc: "Set your WhatsApp number, choose icon style, color, and position." },
                 { title: "Go Live", desc: "Customers see the floating button and can message you with one tap." },
               ].map((item, i) => (
@@ -212,13 +212,13 @@ export default function HomePage() {
                 }}>
                   <div style={{
                     width: 24, height: 24, borderRadius: 6,
-                    background: "#EFF6FF", color: "#0084FF",
+                    background: "#ECFDF5", color: "#16A34A",
                     fontSize: 12, fontWeight: 700,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     flexShrink: 0,
                   }}>{i + 1}</div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "#002B5C", marginBottom: 2 }}>{item.title}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#14532D", marginBottom: 2 }}>{item.title}</div>
                     <div style={{ fontSize: 12, color: "#6B7280", lineHeight: 1.5 }}>{item.desc}</div>
                   </div>
                 </div>
@@ -229,7 +229,7 @@ export default function HomePage() {
 
         <Layout.Section oneHalf>
           <Card sectioned>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#002B5C", marginBottom: 14 }}>Best Practices</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#14532D", marginBottom: 14 }}>Best Practices</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
               {[
                 "Include country code (e.g. 91, 1)",

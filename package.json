@@ -1,5 +1,5 @@
 {
-  "name": "chatlink-whatsapp-button",
+  "name": "chatleaf-whatsapp-button",
   "version": "1.0.0",
   "main": "web/index.js",
   "license": "UNLICENSED",
@@ -17,5 +17,5 @@
     "@shopify/ui-extensions": "2023.10.0",
     "dotenv": "^8.2.0"
   },
-  "author": "ChatLink"
+  "author": "Chatleaf"
 }

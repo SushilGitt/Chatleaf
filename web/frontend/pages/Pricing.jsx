@@ -122,7 +122,7 @@ export default function Pricing() {
               borderBottom: "1px solid #E5E7EB",
             }}>
               <div style={{ padding: "20px 22px" }}>
-                <div style={{ fontSize: 18, fontWeight: 700, color: "#002B5C", marginBottom: 4 }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: "#14532D", marginBottom: 4 }}>
                   Choose your plan
                 </div>
                 <div style={{ fontSize: 13, color: "#6B7280" }}>
@@ -138,10 +138,10 @@ export default function Pricing() {
                 textAlign: "center",
               }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 6 }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: "#002B5C" }}>Free</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "#14532D" }}>Free</span>
                   {isCurrent("free") && <Badge status="info">Current</Badge>}
                 </div>
-                <div style={{ fontSize: 28, fontWeight: 800, color: "#002B5C", lineHeight: 1 }}>$0</div>
+                <div style={{ fontSize: 28, fontWeight: 800, color: "#14532D", lineHeight: 1 }}>$0</div>
                 <div style={{ fontSize: 11, color: "#6B7280", marginTop: 4 }}>forever</div>
               </div>
 
@@ -149,12 +149,12 @@ export default function Pricing() {
               <div style={{
                 padding: "20px 18px",
                 borderLeft: "1px solid #E5E7EB",
-                background: isCurrent("premium") ? "#EFF6FF" : "#FAFCFF",
+                background: isCurrent("premium") ? "#ECFDF5" : "#F7FEF9",
                 textAlign: "center",
                 position: "relative",
               }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 6 }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: "#0084FF" }}>Premium</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "#16A34A" }}>Premium</span>
                   {isCurrent("premium") ? (
                     <Badge status="success">Current</Badge>
                   ) : (
@@ -162,14 +162,14 @@ export default function Pricing() {
                       fontSize: 9,
                       fontWeight: 700,
                       color: "#fff",
-                      background: "#0084FF",
+                      background: "#16A34A",
                       padding: "2px 8px",
                       borderRadius: 999,
                       letterSpacing: 0.5,
                     }}>BEST VALUE</span>
                   )}
                 </div>
-                <div style={{ fontSize: 28, fontWeight: 800, color: "#0084FF", lineHeight: 1 }}>
+                <div style={{ fontSize: 28, fontWeight: 800, color: "#16A34A", lineHeight: 1 }}>
                   ${PRICE}
                   <span style={{ fontSize: 13, fontWeight: 500, color: "#6B7280" }}>/mo</span>
                 </div>
@@ -208,7 +208,7 @@ export default function Pricing() {
                 <div style={{
                   padding: "12px 18px",
                   borderLeft: "1px solid #F3F4F6",
-                  background: isCurrent("premium") ? "#F5FAFF" : "transparent",
+                  background: isCurrent("premium") ? "#F0FDF4" : "transparent",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",

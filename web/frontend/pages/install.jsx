@@ -23,8 +23,8 @@ export default function Installation() {
       desc: "Go to Shopify admin → Online Store → Themes → Customize. Or click the button on the dashboard.",
     },
     {
-      title: "Add the ChatLink Block",
-      desc: "In the theme editor, click Add block → Apps → ChatLink WhatsApp Button.",
+      title: "Add the Chatleaf Block",
+      desc: "In the theme editor, click Add block → Apps → Chatleaf WhatsApp Button.",
     },
     {
       title: "Configure Your Number",
@@ -50,7 +50,7 @@ export default function Installation() {
             <div style={{
               background: "#fff",
               border: "1px solid #E5E7EB",
-              borderTop: "3px solid #0084FF",
+              borderTop: "3px solid #16A34A",
               borderRadius: 8,
               padding: "20px 24px",
               display: "flex",
@@ -60,14 +60,14 @@ export default function Installation() {
               flexWrap: "wrap",
             }}>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: "#0084FF", textTransform: "uppercase", letterSpacing: 0.6, marginBottom: 4 }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: "#16A34A", textTransform: "uppercase", letterSpacing: 0.6, marginBottom: 4 }}>
                   Setup Guide
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 700, color: "#002B5C", marginBottom: 2 }}>
+                <div style={{ fontSize: 20, fontWeight: 700, color: "#14532D", marginBottom: 2 }}>
                   Installation Walkthrough
                 </div>
                 <div style={{ fontSize: 13, color: "#6B7280" }}>
-                  Five quick steps to get ChatLink running on your store
+                  Five quick steps to get Chatleaf running on your store
                 </div>
               </div>
               <div style={{
@@ -115,7 +115,7 @@ export default function Installation() {
                       width: 24,
                       height: 24,
                       borderRadius: "50%",
-                      background: "#0084FF",
+                      background: "#16A34A",
                       color: "#fff",
                       fontSize: 12,
                       fontWeight: 700,
@@ -123,12 +123,12 @@ export default function Installation() {
                       alignItems: "center",
                       justifyContent: "center",
                       border: "3px solid #fff",
-                      boxShadow: "0 0 0 2px #0084FF",
+                      boxShadow: "0 0 0 2px #16A34A",
                     }}>
                       {i + 1}
                     </div>
 
-                    <div style={{ fontSize: 15, fontWeight: 700, color: "#002B5C", marginBottom: 4 }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: "#14532D", marginBottom: 4 }}>
                       {step.title}
                     </div>
                     <div style={{ fontSize: 13, color: "#6B7280", lineHeight: 1.6 }}>
@@ -145,7 +145,7 @@ export default function Installation() {
             <Card sectioned>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
                 <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#002B5C", marginBottom: 2 }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#14532D", marginBottom: 2 }}>
                     Page Coverage
                   </div>
                   <div style={{ fontSize: 12, color: "#6B7280" }}>

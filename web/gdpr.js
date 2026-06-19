@@ -2,7 +2,7 @@ import { DeliveryMethod } from "@shopify/shopify-api";
 import { connectToMongoDB } from "./mongodb.js";
 
 /**
- * ChatLink does not collect or store any customer-level personal data. The app
+ * Chatleaf does not collect or store any customer-level personal data. The app
  * only adds a WhatsApp chat button to the storefront — clicks open WhatsApp
  * directly without any data passing through our servers. The only data we
  * persist is the merchant's shop session (access token + shop domain), used to

@@ -27,12 +27,12 @@ const STATIC_PATH =
 const PREMIUM_PLAN = PLAN_NAME;
 
 const APP_NAMESPACE = "custom";
-const SHOP_METAFIELD_KEY = "chatlink-whatsapp-button";
-const APP_INSTALL_METAFIELD_KEY = "chatlink-whatsapp-button-premium";
+const SHOP_METAFIELD_KEY = "chatleaf-whatsapp-button";
+const APP_INSTALL_METAFIELD_KEY = "chatleaf-whatsapp-button-premium";
 
 const IS_TEST = false;
 
-const APP_NAME = "chatlink-whatsapp-button";
+const APP_NAME = "chatleaf-whatsapp-button";
 
 const HTTP_STATUS = {
   OK: 200,

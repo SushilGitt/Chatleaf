@@ -450,7 +450,7 @@ table.Polaris-DataTable__Table thead th {
     line-height: 26px;
 }
 
-/* ChatLink brand overrides */
+/* Chatleaf brand overrides */
 .Polaris-Button--primary {
     background: #0084FF !important;
     border-color: #0084FF !important;
@@ -486,7 +486,7 @@ table.Polaris-DataTable__Table thead th {
     font-size: 22px;
 }
 
-.container.chatlink-reviews-part h2 {
+.container.chatleaf-reviews-part h2 {
     display: inline-block;
     margin-bottom: 1rem;
     font-size: 22px;

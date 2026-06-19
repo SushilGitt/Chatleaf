@@ -13,7 +13,7 @@ function getSessionStorage() {
     console.log("Using MongoDB session storage");
     return new MongoDBSessionStorage(
       mongoUrl,
-      process.env.MONGODB_DB_NAME || "chatlink_app"
+      process.env.MONGODB_DB_NAME || "chatleaf_app"
     );
   }
 
@@ -73,7 +73,7 @@ const shopify = shopifyApp({
   useOnlineTokens: true,
 });
 
-// GDPR / privacy-compliance webhooks are registered via shopify.app.chatlink.toml
+// GDPR / privacy-compliance webhooks are registered via shopify.app.chatleaf.toml
 // under [webhooks.privacy_compliance] — Shopify no longer accepts those topics
 // via the GraphQL register API and returns 403. We do not register any other
 // webhooks programmatically, so disable the auto-register call after auth.
