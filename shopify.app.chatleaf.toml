@@ -21,4 +21,4 @@ scopes = "read_themes,read_products"
 redirect_urls = [ "https://chatleaf.91.239.208.85.sslip.io/api/auth/callback" ]
 
 [build]
-automatically_update_urls_on_dev = true
+automatically_update_urls_on_dev = false
