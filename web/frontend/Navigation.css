@@ -1,5 +1,5 @@
 .navbar {
-    background-color: #002B5C;
+    background-color: #14532D;
     padding: 10px;
     display: flex;
     justify-content: center;
@@ -29,5 +29,14 @@
   }
 
   .tab-bar a:hover {
-    background-color: #0084FF;
+    background-color: #16A34A;
   }
+
+
+/* Chatleaf brand: recolor Polaris primary buttons to match the emerald identity */
+.Polaris-Button--primary {
+  --pc-button-color: #16A34A !important;
+  --pc-button-color-hover: #15803D !important;
+  --pc-button-color-active: #166534 !important;
+  --pc-button-color-depressed: #166534 !important;
+}
