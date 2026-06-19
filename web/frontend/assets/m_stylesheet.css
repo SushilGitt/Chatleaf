@@ -215,7 +215,7 @@ table.Polaris-DataTable__Table thead th {
 
 .meta-card-data-wrapper:hover .meta-card-hovered-data {
     visibility: visible;
-    background-color: #0084FF;
+    background-color: #16A34A;
     color: var(--p-text-on-critical);
 
     height: 100px;
@@ -452,13 +452,13 @@ table.Polaris-DataTable__Table thead th {
 
 /* Chatleaf brand overrides */
 .Polaris-Button--primary {
-    background: #0084FF !important;
-    border-color: #0084FF !important;
+    background: #16A34A !important;
+    border-color: #16A34A !important;
 }
 
 .Polaris-Button--primary:hover {
-    background: #0066CC !important;
-    border-color: #0066CC !important;
+    background: #15803D !important;
+    border-color: #15803D !important;
 }
 
 /*m-mediacard-container */
