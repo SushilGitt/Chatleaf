@@ -42,7 +42,7 @@ function getSessionStorage() {
 }
 
 export const PLAN_NAME = process.env.PLAN_NAME || "Premium";
-export const PLAN_AMOUNT = parseFloat(process.env.PLAN_AMOUNT || "100.00");
+export const PLAN_AMOUNT = parseFloat(process.env.PLAN_AMOUNT || "9.00");
 export const PLAN_TRIAL_DAYS = parseInt(process.env.PLAN_TRIAL_DAYS || "0", 10);
 
 const shopify = shopifyApp({
