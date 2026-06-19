@@ -9,14 +9,12 @@ import {
   Banner,
   Stack,
 } from "@shopify/polaris";
-import { useAppQuery, useAuthenticatedFetch } from "../hooks";
+import { useAppQuery } from "../hooks";
 import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
   const [activateError, setActivateError] = useState(null);
   const navigate = useNavigate();
-
-  const fetch = useAuthenticatedFetch();
 
   const {
     data: subscriptionData,
@@ -31,23 +29,22 @@ export default function HomePage() {
 
   const isPlanLoading = isLoading || isFetching;
 
-  const openThemeEditor = async () => {
+  const openThemeEditor = () => {
     setActivateError(null);
-    try {
-      const response = await fetch("/api/getshop");
-      const data = await response.json();
-      if (!data?.shop) {
-        setActivateError("Could not determine shop URL.");
-        return;
-      }
-      window.open(
-        `https://${data.shop}/admin/themes/current/editor?context=apps`,
-        "_blank"
-      );
-    } catch (err) {
-      console.error("openThemeEditor failed:", err);
-      setActivateError("Failed to open theme editor.");
+    // Resolve the shop synchronously (App Bridge v4 exposes it on
+    // window.shopify) so window.open stays inside the click gesture —
+    // awaiting a fetch first causes the browser to popup-block the new tab.
+    const shop =
+      window.shopify?.config?.shop ||
+      new URLSearchParams(window.location.search).get("shop");
+    if (!shop) {
+      setActivateError("Could not determine shop URL.");
+      return;
     }
+    window.open(
+      `https://${shop}/admin/themes/current/editor?context=apps`,
+      "_blank"
+    );
   };
 
   const steps = [
